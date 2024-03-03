@@ -22,16 +22,6 @@ public static class PipaAsyncExtension
         return fn(a);
     }
 
-    public static TOut Pipa2
-      <TIn, TOut>
-
-      (this TIn input,
-       Func<TIn, TOut> fn)
-    {
-        var a = input;
-        return fn(a);
-    }
-
     public static async Task<TOut> Pipa<TIn, TOut>
       (this TIn input, Func<TIn, Task<TOut>> fn)
       => await fn(input);
