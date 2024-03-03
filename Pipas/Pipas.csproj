@@ -4,6 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>0.0.1</Version>
+    <Authors>dossancto</Authors>
+    <Description>Pipeline operators extension</Description>
+    <RepositoryUrl>https://github.com/dossancto/Pipas</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
