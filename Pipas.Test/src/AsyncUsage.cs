@@ -10,7 +10,7 @@ public class AsyncUsage
 {
     private async Task<string> SaveUserInDatabase(User user)
     {
-        await Task.Delay(1000);
+        await Task.Delay(50);
 
         return "some-id";
     }
@@ -21,6 +21,11 @@ public class AsyncUsage
         return Task.CompletedTask;
     }
 
+    private void ValidateUser(User u)
+    {
+        /// ... Apply some user validation
+    }
+
     [Fact]
     public async Task Example_1()
     {
@@ -29,9 +34,34 @@ public class AsyncUsage
         var formatUserName = (User p) => p with { Name = p.Name.Trim() };
 
         var result = await payload
+
+          /*
+           * Does not returns nothing, so keep
+           * the input value to next pipe 
+          */
+          .PipaVoid(ValidateUser)
+
+          /*
+           * returns the formated user values
+          */
           .Pipa(formatUserName)
+
+          /*
+           * Return a tuple with the suplied values (Output, Input)
+           * In this case, (Task<String> Id, User user)
+          */
           .PipaTuple(SaveUserInDatabase)
-          .PipaAwait((id, user) => user with { Id = id })
+
+          /*
+           * Resolves the async Task<string> to can be used without await
+           * Maps the tuple for apply some rule.
+           * Returns only the Output
+          */
+          .PipaAwait((string id, User user) => user with { Id = id })
+
+          /*
+           * Logs the result, this function return type is Task, so we keep the input value as Output
+          */
           .PipaTask(PrintSomething)
           ;
 
