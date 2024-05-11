@@ -2,7 +2,7 @@ namespace Pipas;
 
 public static class PipaAsyncExtension
 {
-    public static async Task<TOut> Pipa
+    public static async Task<TOut> PipaAsync
       <TIn, TParam1, TOut>
 
       (this Task<TIn> input,
@@ -12,7 +12,7 @@ public static class PipaAsyncExtension
         return fn(a, p1);
     }
 
-    public static async Task<TOut> Pipa
+    public static async Task<TOut> PipaAwait
       <TIn, TOut>
 
       (this Task<TIn> input,
@@ -22,7 +22,7 @@ public static class PipaAsyncExtension
         return fn(a);
     }
 
-    public static async Task<TOut> Pipa<TIn, TOut>
+    public static async Task<TOut> PipaAsync<TIn, TOut>
       (this TIn input, Func<TIn, Task<TOut>> fn)
       => await fn(input);
 }

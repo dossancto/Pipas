@@ -2,22 +2,20 @@ namespace Pipas;
 
 public static class PipaTupleExtension
 {
+    /// <summary>
+    /// Return the input of this function, and the function return.
+    /// Eg. If the function param is `string` and the function return type is `int`, 
+    /// the return will be (`string`, `int`)
+    /// </summary>
     public static (TOut Output, TIn Input) PipaTuple<TIn, TOut>
       (this TIn input, Func<TIn, TOut> fn)
       => (fn(input), input);
-
-    public static async Task<(TOut Output, TIn Input)> PipaTuple<TIn, TOut>
-      (this Task<TIn> input, Func<TIn, TOut> fn)
-    {
-        var val = await input;
-        return (fn(val), val);
-    }
 
     public static (TOut Output, TIn Input) PipaTuple<TIn, TParam1, TOut>
       (this TIn input, Func<TIn, TParam1, TOut> fn, TParam1 p1)
       => (fn(input, p1), input);
 
-    public static async Task<(TOut Output, TIn Input)> PipaTuple
+    public static async Task<(TOut Output, TIn Input)> PipaTupleAsync
       <TIn, TParam1, TOut>
 
       (this Task<TIn> input,
@@ -28,18 +26,18 @@ public static class PipaTupleExtension
         return (fn(a, p1), a);
     }
 
-    // public static async Task<(TOut Output, TIn Input)> PipaTuple
-    //   <TIn, TOut>
+    public static async Task<(TOut Output, TIn Input)> PipaTupleAsync
+      <TIn, TOut>
 
-    //   (this Task<TIn> input,
-    //    Func<TIn, TOut> fn)
-    // {
-    //     var inputResult = await input;
+      (this Task<TIn> input,
+       Func<TIn, TOut> fn)
+    {
+        var inputResult = await input;
 
-    //     return (fn(inputResult), inputResult);
-    // }
+        return (fn(inputResult), inputResult);
+    }
 
-    public static async Task<(TOut Output, TIn Input)> PipaTuple
+    public static async Task<(TOut Output, TIn Input)> PipaTupleAsync
       <TIn, TOut>
 
       (this Task<TIn> input,
@@ -48,5 +46,42 @@ public static class PipaTupleExtension
         var inputResult = await input;
 
         return (await fn(inputResult), inputResult);
+    }
+
+    public static async Task<(TOut Output, TIn Input)> PipaTupleAwait
+      <TIn, TIn2, TOut>(
+       this (Task<TIn> a, TIn2 b) input,
+       Func<TIn, TIn2, Task<TOut>> fn
+       )
+    {
+        var inputResult = await input.a;
+
+        return (await fn(inputResult, input.b), inputResult);
+    }
+
+    public static async Task<(TOut Output, TIn Input)> PipaTupleAwait
+      <TIn, TIn2, TOut>(
+       this (Task<TIn> a, TIn2 b) input,
+       Func<TIn, TIn2, TOut> fn
+       )
+    {
+        var inputResult = await input.a;
+
+        return (fn(inputResult, input.b), inputResult);
+    }
+
+    /// <summary>
+    /// Receives the input as Tuple, then resolve the first paramether with `await`,
+    /// then return the function result.
+    /// </summary>
+    public static async Task<TOut> PipaAwait
+      <TIn, TIn2, TOut>(
+       this (Task<TIn> a, TIn2 b) input,
+       Func<TIn, TIn2, TOut> fn
+       )
+    {
+        var inputResult = await input.a;
+
+        return fn(inputResult, input.b);
     }
 }

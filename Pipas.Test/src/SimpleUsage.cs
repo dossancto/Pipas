@@ -2,6 +2,11 @@ namespace Pipas.Test;
 
 public class SimpleUsage
 {
+    public void LogItem(int item)
+    {
+        /// ... log the item
+    }
+
     [Fact]
     public void Example_1()
     {
@@ -10,6 +15,7 @@ public class SimpleUsage
 
         var result = 5
           .Pipa(add, 5)
+          .PipaVoid(LogItem)
           .Pipa(square)
           ;
 

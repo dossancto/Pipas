@@ -15,19 +15,24 @@ public class AsyncUsage
         return "some-id";
     }
 
+    private Task PrintSomething(User u)
+    {
+        /// ... logs something, or apply any changes without return type
+        return Task.CompletedTask;
+    }
+
     [Fact]
     public async Task Example_1()
     {
         var payload = new User { Name = "  John   " };
-
-        var applyIdToUser = ((string id, User user) p) => p.user with { Id = p.id };
 
         var formatUserName = (User p) => p with { Name = p.Name.Trim() };
 
         var result = await payload
           .Pipa(formatUserName)
           .PipaTuple(SaveUserInDatabase)
-          .Pipa(applyIdToUser).TupleInput()
+          .PipaAwait((id, user) => user with { Id = id })
+          .PipaTask(PrintSomething)
           ;
 
         result.Id.Should().Be("some-id");

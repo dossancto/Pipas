@@ -2,18 +2,11 @@ namespace Pipas;
 
 public static class PipaVoidExtension
 {
-    public static async Task<TIn> Pipa
-      <TIn>
-
-      (this TIn input,
-       Func<TIn, Task> fn)
-    {
-        await fn(input);
-
-        return input;
-    }
-
-    public static TIn Pipa
+    /// <summary>
+    /// Executes the provided function, but return the input as output.
+    /// Used when want to apply a method that does not returns a value
+    /// </summary>
+    public static TIn PipaVoid
       <TIn>
 
       (this TIn input,
@@ -24,27 +17,21 @@ public static class PipaVoidExtension
         return input;
     }
 
-    public static async Task<TIn> Pipa
-      <TIn>
-
-      (this Task<TIn> input,
-       Action<TIn> fn)
+    /// <summary>
+    /// Executes the provided function, but return the input as output.
+    /// Used when want to apply a method that does not returns a value. (Task)
+    /// </summary>
+    public static async Task<TIn> PipaTask
+      <TIn, TOut>(
+          this Task<TIn> input,
+          Func<TIn, TOut> fn
+       )
     {
-        var val = await input;
+        var a = await input;
 
-        fn(val);
+        fn(a);
 
-        return val;
+        return a;
     }
 
-    public static async Task PipaVoid
-      <TIn>
-
-      (this Task<TIn> input,
-       Action<TIn> fn)
-    {
-        var val = await input;
-
-        fn(val);
-    }
 }
